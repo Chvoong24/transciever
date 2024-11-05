@@ -1,27 +1,30 @@
+/* nRF_swLED_receiver_tester.ino
+* Sketch 2 of 2: receiver, aka Rcvr, the receiving
+sketch for use with the nRF24L01+ */
 #include <SPI.h>
-#include "Mirf.h“
-#include "nRF24L01.h“
+#include "Mirf.h"
+#include "nRF24L01.h"
 #include "MirfHardwareSpiDriver.h"
 uint16_t sensorReading;
-int8_t reps = 10;
+const int LED = 9;
 void setup(){
 Serial.begin(9600);
+pinMode(LED, OUTPUT);
 Mirf.spi = &MirfHardwareSpi;
 Mirf.init();
-Mirf.setRADDR((byte *)“HomeB");
+Mirf.setRADDR((byte *)"CHRIS");
 Mirf.payload = sizeof(sensorReading);
 Mirf.channel = 90;
 Mirf.config();
+Serial.println("starting");
 }
 void loop(){
-sensorReading = 0;
-for(int i=0;i<reps;i++){
-sensorReading += analogRead(0);
+while(!Mirf.dataReady()){}
+Mirf.getData((byte *) &sensorReading);
+Serial.println(sensorReading);
+if(sensorReading == 1)
+{digitalWrite(LED,HIGH);}
+else
+{digitalWrite(LED,LOW);}
+delay(50);
 }
-sensorReading = sensorReading/reps;
-Mirf.setTADDR((byte *)“Rover");
-Mirf.send((byte *) &sensorReading);
-while(Mirf.isSending()){}
-delay(10);
-}
-

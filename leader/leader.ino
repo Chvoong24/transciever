@@ -36,5 +36,4 @@ Mirf.setTADDR((byte *)"Rcvr");
 Mirf.send((byte *) &sensorReading);
 while(Mirf.isSending()){}
 delay(50); // wait some time
-before taking another reading
 } 
