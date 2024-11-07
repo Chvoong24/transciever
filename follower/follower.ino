@@ -26,8 +26,10 @@ void setup() {
 void loop() {
   while (!Mirf.dataReady()) {}
   Mirf.getData((byte *)&stick);
-  int val = map(stick.rX, 0, 1023, 0, 255);
+  int valX = map(stick.rX, 0, 1023, 0, 255);
+  int valY = map(stick.rY, 0, 1023, 0, 255);
   Serial.println(stick.rX);
-  analogWrite(LED, val);
+  analogWrite(LED, valX);
+  analogWrite(A4, valY)
   delay(50);
 }
