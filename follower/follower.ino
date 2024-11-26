@@ -6,30 +6,26 @@ sketch for use with the nRF24L01+ */
 #include "nRF24L01.h"
 #include "MirfHardwareSpiDriver.h"
 
-struct joystick {
-  uint16_t rX;
-  uint16_t rY;
-} stick;
-
-const int LED = A0;
+int LED = 2;
+int sensorReading;
 void setup() {
   Serial.begin(9600);
   pinMode(LED, OUTPUT);
   Mirf.spi = &MirfHardwareSpi;
   Mirf.init();
-  Mirf.setRADDR((byte *)"TERPA");
-  Mirf.payload = sizeof(stick);
+  Mirf.setRADDR((byte *)"BOOOO");
+  Mirf.payload = sizeof(sensorReading);
   Mirf.channel = 90;
   Mirf.config();
   Serial.println("starting");
 }
 void loop() {
-  while (!Mirf.dataReady()) {}
-  Mirf.getData((byte *)&stick);
-  int valX = map(stick.rX, 0, 1023, 0, 255);
-  int valY = map(stick.rY, 0, 1023, 0, 255);
-  Serial.println(stick.rX);
-  analogWrite(LED, valX);
-  analogWrite(A4, valY)
+  while(!Mirf.dataReady()){}
+  Mirf.getData((byte *) &sensorReading);
+  Serial.println(sensorReading);
+  if(sensorReading == 1)
+  {digitalWrite(LED,HIGH);}
+  else
+  {digitalWrite(LED,LOW);}
   delay(50);
 }
